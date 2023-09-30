@@ -201,9 +201,11 @@ async def build_chat_request(
     chat_data: dict,
     conversation_style: ConversationStyle
     | Literal["creative", "balanced", "precise"] = ConversationStyle.Precise,
+    proxy=str,
     image: str | bytes | Path = None,
     personality=None,
     locale=guess_locale(),
+    
 ):
     if "message" in chat_data.keys():
         is_start_of_conversation = False
@@ -331,7 +333,7 @@ async def build_chat_request(
             part_image_base64.set_content_disposition("form-data", name="imageBase64")
 
             async with session.post(
-                "https://www.bing.com/images/kblob", headers=IMAGE_HEADERS, data=writer
+                "https://www.bing.com/images/kblob", headers=IMAGE_HEADERS, data=writer,proxy=proxy,
             ) as response:
                 if response.status != 200:
                     print(f"Status code: {response.status}")

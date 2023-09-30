@@ -10,3 +10,8 @@ cookies.json
 temp.py
 *.jpg
 *.png
+.vscode
+cookie.json
+*/__pycache__/
+data1.json
+tmp/

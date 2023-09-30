@@ -104,7 +104,7 @@ class Bing_Client:
                 proxy=self.proxy,
             )
             if response.status != 302:
-                return Apology(content="Drawing Failed: Redirect failed")
+                return Apology(content="Drawing Failed: Redirect failed!")
             resp_text = await response.text()
             if "this prompt has been blocked" in resp_text.lower():
                 return Apology(
@@ -282,6 +282,7 @@ class Bing_Client:
                     question,
                     chat_data,
                     conversation_style,
+                    self.proxy,
                     image,
                     personality,
                     locale,
@@ -353,6 +354,7 @@ class Bing_Client:
                                         == "GenerateContentQuery"
                                 ):
                                     """Draw images"""
+
                                     image_tasks.append(
                                         asyncio.create_task(
                                             self.draw(message.get("text", ""))
