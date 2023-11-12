@@ -15,7 +15,7 @@ async def main():
 
     while True:
         try:
-            prmot = input("Enter your prompt: ")
+            prmot = input("Enter your prompt:\n ")
             async for text in client.ask_stream(prmot, chat=chat,
                                                 yield_search=False,
                                                 conversation_style=ConversationStyle.Creative,
