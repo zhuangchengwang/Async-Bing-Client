@@ -31,8 +31,8 @@ type JxGoodBanner struct {
 	Desc         string    `gorm:"column:desc;type:varchar(1000);not null" json:"desc"`           // 简介
 	Status       int       `gorm:"column:status;type:int(11);not null;default:0" json:"status"`   // 状态 1未启用   2启用
 	Sort         int       `gorm:"column:sort;type:int(11);not null;default:0" json:"sort"`                   // 排序
-    CreatedAt    model.Time `gorm:"column:created_at;type:datetime"`
-	UpdatedAt    model.Time `gorm:"column:updated_at;type:datetime"`
+    CreatedAt    time.Time `gorm:"column:created_at;type:datetime"`
+	UpdatedAt    time.Time `gorm:"column:updated_at;type:datetime"`
 }
 // 创造对象
 func NewJxGoodBanner() *JxGoodBanner {
@@ -49,7 +49,6 @@ func (m *JxGoodBanner) GetEnableAllBannerList() (lst []*JxGoodBanner, err error)
 	err = global.JX_DB.Where("status = ?", constant.JxGoodBannerStatusEnable).Order("sort asc").Find(&lst).Error
 	return
 }
-
 ```
 ### service层
 文件:`service/jingxuan/jx_good_banner_service.go`
@@ -88,14 +87,14 @@ func (service *JxGoodBannerService) GetBannerMap() (res map[int]*response.Info, 
 	res = make(map[int]string, 0)
 	for _, item := range lst {
         info := new(response.Info)
-        info.Name = item.Name
+        info.Name = item.Name			
         info.Msg = fmt.Sprintf("%v很不错!",item.Name)
+		// 转化成 model.Time的格式
+		info.CreatedAt = model.Time(item.CreatedAt)
 		res[item.ID] = info
 	}
 	return
 }
-
-
 ```
 
 ### request层
@@ -110,9 +109,11 @@ type AddBannerReq struct {
 ### response层
 文件:`model/jxdata/response/jx_good_banner_reponse.go`
 ```golang
+import "adminserver/model"
 type Info struct {
-	Name         string `json:"name"`
+	Name        string `json:"name"`
 	Msg         string `json:"msg"`
+	CreatedAt   model.Time `json:"created_at"` // 使用model.Time时间类型,json解析后的格式对人友好
 }
 ```
 ### api层
@@ -121,7 +122,7 @@ type Info struct {
 package jingxuan
 
 import (
-	"adminserver/model/common/response"
+	"adminserver/model/jxdata/response"
 	"adminserver/model/jxdata/request"
 	"adminserver/service/jingxuan"
 	"fmt"
@@ -161,7 +162,6 @@ func (*JxGoodBannerApi) GetBannerMap(c *gin.Context) {
 	}
 	response.OkWithDetailed(data,"操作成功", c)
 }
-
 ```
 
 ### routers层
@@ -175,7 +175,7 @@ import (
 )
 type JxGoodBannerRouter struct {
 }
-func (rec *JxGoodBannerRouter) InitRouter(Router *gin.RouterGroup) {
+func (rec *JxGoodBannerRouter) InitJxGoodBannerRouter(Router *gin.RouterGroup) {
 	router := Router.Group("banner")
 	var api = v1.ApiGroupApp.JxApiGroup.JxGoodBannerApi
 	{
@@ -183,8 +183,6 @@ func (rec *JxGoodBannerRouter) InitRouter(Router *gin.RouterGroup) {
 		router.POST("add", api.Add)
 	}
 }
-
-
 ```
 # Part 2
 ## 额外方法
@@ -192,36 +190,18 @@ func (rec *JxGoodBannerRouter) InitRouter(Router *gin.RouterGroup) {
 ## 已完成的代码
 ### ddl
 ```sql
-create table jx_activity_promotion
+create table jx_dk_user_maintain
 (
-    id              int auto_increment comment '自增 id'
+    id                int auto_increment
         primary key,
-    period tinyint (3) default 0 not null comment '活动的期数',
-    dy_id           int         default 0  not null comment '抖音 id',
-    user_id         int         default 0  not null comment '蝉选用户 id',
-    author_id       varchar(32) default '' not null comment '达人 id',
-    author_info     json                   null comment '达人信息（带货等级、头像、粉丝等信息）',
-    team_name       varchar(64) default '' not null comment '团队名称（or 个人）',
-    user_name       varchar(64) default '' not null comment '用户名称',
-    mobile          varchar(32) default '' not null comment '联系电话',
-    region          tinyint(3)  default 0  not null comment '赛区 1-新人成长赛 2-达人冲刺赛 3-大神擂台赛 4-团队赛区',
-    type            tinyint(3)  default 0  not null comment '参赛类型 1-个人 2-团队',
-    race_no         varchar(32) default '' not null comment '参赛编号（同个团队的编号相同）',
-    is_leader       tinyint(3)  default 0  not null comment '是否是团长 1-是 0-否',
-    is_new          tinyint(3)  default 0  not null comment '是否是新用户 1-是 0-否',
-    order_count     int         default 0  not null comment '订单数',
-    total_gmv       int         default 0  not null comment '全站 gmv',
-    settlement_gmv  int         default 0  not null comment '结算 gmv',
-    payment_gmv     int         default 0  not null comment '支付gmv',
-    service_fee     int         default 0  not null comment '结算服务费',
-    participated_at datetime               null comment '参加时间',
-    del_flag        tinyint(3)  default 0  not null comment '资格标记 1-已经删除 0-未删除',
-    created_at      datetime               null comment '创建时间',
-    updated_at      datetime               null comment '更新时间',
-    constraint dy_id
-        unique (dy_id, region, del_flag)
+    user_id           int          null comment '抖客用户id(也是蝉选用户)',
+    operator_uuid     varchar(30)  null comment '操作者uuid(运营人员)',
+    operator_nickname varchar(32)  null comment '操作昵称',
+    type              int          null comment '评论类型;1:添加未通过;2:添加已通过;3:下滑已沟通;4其他',
+    comment           varchar(100) null comment '评论',
+    created_at        datetime     null
 )
-    comment '蝉选晋级赛活动报名表';
+    comment '抖客用户维护';
 ```
 ------------
 请仔细阅读并理解上面 <Part 1> 和 <Part 2>的内容, 实现下面的需求:
@@ -229,7 +209,7 @@ create table jx_activity_promotion
 - 判断下<Part 2>的<额外方法>是否提供有效的内容,如果是,请思考如何调用<Part 2>的<额外方法>实现下面相关的功能
 - 判断下<Part 2>的<已完成的代码>是否提供有效的内容,如果是,请思考如何从<Part 2>的<已完成的代码>后面,继续编写其他层级的代码
 
-- 功能:实现列表接口,根据活动期数,用户id,团队名称,手机号,报名时间 进行搜索,返回列表和其他统计信息;其中列表项包含机构名称,团长用户名,团队联系人,团队名称,团长手机号,报名时间,团队人数,出单人数,结算服务费,支付时间,订单数,结算GMV,支付GMV 等字段;统计信息包含:报名用户数,参赛抖音号数,拉新抖音号数,报名团队数,总订单数,总gmv,出单商品数
+- 功能:1.实现列表接口,获取某个user_id的所有评论信息,按时间倒序;2.生成评论接口;3.删除某条评论接口
 
 
 - 仔细理解<Part 1>的<项目规范>,<业务概念>,<常用方法>,以及<代码示例>里面的注释内容,思考如何按照<Part 1>的<项目规范>实现代码
