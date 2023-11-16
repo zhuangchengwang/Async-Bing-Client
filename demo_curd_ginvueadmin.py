@@ -63,7 +63,7 @@ def parse_markdown(content, prefix_path):
     return parsed
 
 # 定义一个前缀路径的变量，你可以根据你的需要修改
-prefix_path = "./promot"
+prefix_path = "/Users/cds-dn429/Desktop/workspace/project/golang/backend-admin/server"
 # 打开文件并读取内容
 file_path = "./promot/curd_backend.md"
 
@@ -89,9 +89,13 @@ async def main():
 
     # 遍历promot列表
     await client.init()
-    chat = await client.create_chat()
-
-
+    # chat = await client.create_chat()
+    # print("conversationId:",chat)
+    cid =  ""
+    if cid == "":
+        chat = await client.create_chat()
+    else:
+        chat =  {cid: client.chats[cid]}
     for index in range(len(promots)):
         if index!=0:
             print("执行命令:",promots[index])
@@ -107,7 +111,7 @@ async def main():
             pased = parse_markdown(result, prefix_path)
             if pased==False:
                 print("解析失败。")
-                break
+                # break
         except KeyboardInterrupt:
             print("\nExiting program...")
             break
