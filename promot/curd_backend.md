@@ -38,6 +38,10 @@ type JxGoodBanner struct {
 func NewJxGoodBanner() *JxGoodBanner {
 	return new(JxGoodBanner)
 }
+// 返回对应的表名
+func (m *JxGoodBanner) TableName() string {
+	return "jx_good_banner"
+}
 // 增加一条记录,不验证数据格式,由service层验证
 func (m *JxGoodBanner) Add(banner *jxdata.JxGoodBanner) (err error) {
 	err = global.JX_DB.Create(banner).Error
