@@ -159,6 +159,12 @@ func (*JxGoodBannerApi) Add(c *gin.Context) {
 }
 
 func (*JxGoodBannerApi) GetBannerMap(c *gin.Context) {
+	// var req request.GetBannerMapReq
+	// err := c.ShouldBindQuery(&req)
+	// if err != nil {
+	// 	response.FailWithMessage(fmt.Sprintf("%+v", err), c)
+	// 	return
+	// }
 	data, err := jingxuan.NewJxGoodBannerService().GetBannerMap()
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
