@@ -12,7 +12,6 @@
   // global.JX_DB 如下:
   err = global.JX_DB.Create(banner).Error
 ```
-
 ## 代码示例
 ### ddl
 ### model层
@@ -175,13 +174,12 @@ func (*JxGoodBannerApi) GetBannerMap(c *gin.Context) {
 }
 ```
 
-### routers层
+### router层
 文件:`router/jingxuan/jx_good_banner_router.go`
 ```golang
 package jingxuan
 import (
 	v1 "adminserver/api/v1"
-
 	"github.com/gin-gonic/gin"
 )
 type JxGoodBannerRouter struct {
@@ -189,41 +187,34 @@ type JxGoodBannerRouter struct {
 func (rec *JxGoodBannerRouter) InitJxGoodBannerRouter(Router *gin.RouterGroup) {
 	router := Router.Group("banner")
 	var api = v1.ApiGroupApp.JxApiGroup.JxGoodBannerApi
-	{
-		router.GET("get-banner-map", api.GetBannerMap)
-		router.POST("add", api.Add)
-	}
+	router.GET("get-banner-map", api.GetBannerMap)
+	router.POST("add", api.Add)
 }
 ```
+### 其他层
+文件:`<本层文件所在的路径>`
+```golang
+your code here
+```
+## 编码规则
+- 每个函数或者方法,应该有中文注释,供人查阅
+- 要保证接口的性能,善用go的协程,并发获取数据,确保响应时间更多
+- 数据库压力比较大,不要单独在循环语句中逐条查询相关数据,尽可能批量查询
+- 防止sql注入
 # Part 2
 ## 额外方法
-
+无
 ## 已完成的代码
-### ddl
-```sql
-create table jx_dk_user_maintain
-(
-    id                int auto_increment
-        primary key,
-    user_id           int          null comment '抖客用户id(也是蝉选用户)',
-    operator_uuid     varchar(30)  null comment '操作者uuid(运营人员)',
-    operator_nickname varchar(32)  null comment '操作昵称',
-    type              int          null comment '评论类型;1:添加未通过;2:添加已通过;3:下滑已沟通;4其他',
-    comment           varchar(100) null comment '评论',
-    created_at        datetime     null
-)
-    comment '抖客用户维护';
-```
+无
 ------------
 请仔细阅读并理解上面 <Part 1> 和 <Part 2>的内容, 实现下面的需求:
 # 需求
 - 判断下<Part 2>的<额外方法>是否提供有效的内容,如果是,请思考如何调用<Part 2>的<额外方法>实现下面相关的功能
 - 判断下<Part 2>的<已完成的代码>是否提供有效的内容,如果是,请思考如何从<Part 2>的<已完成的代码>后面,继续编写其他层级的代码
 
-- 功能:1.实现列表接口,获取某个user_id的所有评论信息,按时间倒序;2.生成评论接口;3.删除某条评论接口
+- 功能:1.实现收藏文章接口 2.取消收藏接口 3.获取文章列表接口 
 
 
 - 仔细理解<Part 1>的<项目规范>,<业务概念>,<常用方法>,以及<代码示例>里面的注释内容,思考如何按照<Part 1>的<项目规范>实现代码
-- 现在开始,我认为你已经准备就绪,接下来请为我生成request层的代码,格式需要和<代码示例>中保持一致;
-- 以"### request层\n"开头,编写代码
-- golang代码需用"```golang <golang代码>```" markdown可解析的格式输出
+- 现在开始,我认为你已经准备就绪,接下来请为我生成request层的代码,格式需要和<代码示例>中<代码格式>小节保持一致;
+- 以"### request层\n"开头,遵循<编码规则>编写代码

@@ -64,6 +64,7 @@ def parse_markdown(content, prefix_path):
 
 # 定义一个前缀路径的变量，你可以根据你的需要修改
 prefix_path = "/Users/cds-dn429/Desktop/workspace/project/golang/backend-admin/server"
+prefix_path = "./promot"
 # 打开文件并读取内容
 file_path = "./promot/curd_backend.md"
 
@@ -81,11 +82,11 @@ async def main():
         prmot = f.read()
         promots.append(prmot)
     # api层,service层,model层,requet层,routers层,response层
-    promots.append("保持格式一致,以\"### model层\n\"开头,编写model层代码")
-    promots.append("保持格式一致,以\"### service层\n\"开头,编写service层代码")
-    promots.append("保持格式一致,以\"### response层\n\"开头,编写response层代码")
-    promots.append("保持格式一致,以\"### api层\n\"开头,编写api层代码")
-    promots.append("保持格式一致,以\"### routers层\n\"开头,编写routers层代码")
+    promots.append("以\"### model层\n\"开头,遵循<编码规则>编写model层代码")
+    promots.append("以\"### service层\n\"开头,遵循<编码规则>编写service层代码")
+    promots.append("以\"### response层\n\"开头,遵循<编码规则>编写response层代码")
+    promots.append("以\"### api层\n\"开头,遵循<编码规则>编写api层代码")
+    promots.append("以\"### routers层\n\"开头,遵循<编码规则>编写routers层代码")
 
     # 遍历promot列表
     await client.init()
