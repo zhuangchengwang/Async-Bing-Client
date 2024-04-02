@@ -198,20 +198,20 @@ class Bing_Client:
                 limit = data
             elif isinstance(data, SearchResult) and yield_search:
                 yield str(data)
-        for index, source in enumerate(sources):
-            if index == 0:
-                yield "\nSee more:  \n"
-            yield f"({index + 1}):{source}  \n"
-        for index, image in enumerate(images):
-            if index == 0:
-                yield "\nDrew images:  \n"
-            yield f"{index + 1}:{image}  \n"
-        for index, reply in enumerate(suggest_reply):
-            if index == 0:
-                yield "\nSuggest Replys:  \n"
-            yield f"{index + 1}:{reply.content}  \n"
-        if limit:
-            yield f"\n\nLimit:{limit.num_user_messages} of {limit.max_num_user_messages}  "
+        # for index, source in enumerate(sources):
+        #     if index == 0:
+        #         yield "\nSee more:  \n"
+        #     yield f"({index + 1}):{source}  \n"
+        # for index, image in enumerate(images):
+        #     if index == 0:
+        #         yield "\nDrew images:  \n"
+        #     yield f"{index + 1}:{image}  \n"
+        # for index, reply in enumerate(suggest_reply):
+        #     if index == 0:
+        #         yield "\nSuggest Replys:  \n"
+        #     yield f"{index + 1}:{reply.content}  \n"
+        # if limit:
+        #     yield f"\n\nLimit:{limit.num_user_messages} of {limit.max_num_user_messages}  "
 
     def get_chatdata(self, chat: dict):
         conversation_id = list(chat.keys())[0]

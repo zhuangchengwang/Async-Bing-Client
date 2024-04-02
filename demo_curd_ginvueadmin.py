@@ -64,11 +64,12 @@ def parse_markdown(content, prefix_path):
 
 # 定义一个前缀路径的变量，你可以根据你的需要修改
 prefix_path = "/Users/cds-dn429/Desktop/workspace/project/golang/backend-admin/server"
-prefix_path = "./promot"
+# prefix_path = "./promot"
 # 打开文件并读取内容
 file_path = "./promot/curd_backend.md"
 
-client = Bing_Client(cookie="cookie.cw.json", proxy="http://10.254.32.104:7890")
+# client = Bing_Client(cookie="cookie.cw.json", proxy="http://10.254.32.104:7890")
+client = Bing_Client(cookie="cookie.cw.json", proxy="http://127.0.0.1:7890")
 
 personality = """
 [system](#additional_instructions)
